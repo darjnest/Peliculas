@@ -60,9 +60,10 @@
         line-height: 1.4;
       }
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   </head>
   <body>
-    <div class="movies-container">
+    <div class="movies-container" id="movies-container">
       {% for movie in page_obj %}
       <div class="movie-card">
         {% if movie.poster_url %}
@@ -87,8 +88,10 @@
     <div class="pagination">
       <span class="step-links">
         {% if page_obj.has_previous %}
-        <a href="?page=1">&laquo; primera</a>
-        <a href="?page={{ page_obj.previous_page_number }}">anterior</a>
+        <a href="?page=1" class="page-link">&laquo; primera</a>
+        <a href="?page={{ page_obj.previous_page_number }}" class="page-link"
+          >anterior</a
+        >
         {% endif %}
 
         <span class="current">
@@ -96,10 +99,26 @@
         </span>
 
         {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}">siguiente</a>
-        <a href="?page={{ page_obj.paginator.num_pages }}">última &raquo;</a>
+        <a href="?page={{ page_obj.next_page_number }}" class="page-link"
+          >siguiente</a
+        >
+        <a href="?page={{ page_obj.paginator.num_pages }}" class="page-link"
+          >última &raquo;</a
+        >
         {% endif %}
       </span>
     </div>
+    <script>
+      $(document).ready(function () {
+        $(".page-link").click(function (e) {
+          e.preventDefault();
+          var url = $(this).attr("href");
+          $.get(url, function (data) {
+            var newContent = $(data).find("#movies-container").html();
+            $("#movies-container").html(newContent);
+          });
+        });
+      });
+    </script>
   </body>
 </html>
